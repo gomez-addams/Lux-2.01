@@ -1,3 +1,6 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+
 #ifndef LUX_STANDARD_CORE_INCLUDED
 #define LUX_STANDARD_CORE_INCLUDED
 
@@ -656,7 +659,7 @@ VertexOutputForwardBase vertForwardBase (LuxVertexInput v)
 	VertexOutputForwardBase o;
 	UNITY_INITIALIZE_OUTPUT(VertexOutputForwardBase, o);
 
-	float4 posWorld = mul(_Object2World, v.vertex);
+	float4 posWorld = mul(unity_ObjectToWorld, v.vertex);
 //	Lux: We always need world position for e.g. area lights
 //	#if UNITY_SPECCUBE_BOX_PROJECTION
 		o.posWorld.xyz = posWorld.xyz;
@@ -704,10 +707,10 @@ VertexOutputForwardBase vertForwardBase (LuxVertexInput v)
 		#if !defined (_PARALLAXMAP)
 			TANGENT_SPACE_ROTATION;
 		#endif
-		o.fogCoord.yz = (mul(rotation, mul(_World2Object, float4(0,1,0,0)).xyz)).xy;
+		o.fogCoord.yz = (mul(rotation, mul(unity_WorldToObject, float4(0,1,0,0)).xyz)).xy;
 	#endif
 	// Get and store object scale / Needed by water ripples to match POM offset
-	float4 scaleX = mul(_Object2World, float4(1.0, 0.0, 0.0, 0.0));
+	float4 scaleX = mul(unity_ObjectToWorld, float4(1.0, 0.0, 0.0, 0.0));
 	o.fogCoord.w = length(scaleX);
 //	Lux: Get the vertex colors
 	o.color = v.color;
@@ -859,7 +862,7 @@ VertexOutputForwardAdd vertForwardAdd (LuxVertexInput v)
 	VertexOutputForwardAdd o;
 	UNITY_INITIALIZE_OUTPUT(VertexOutputForwardAdd, o);
 
-	float4 posWorld = mul(_Object2World, v.vertex);
+	float4 posWorld = mul(unity_ObjectToWorld, v.vertex);
 //	Lux:
 	o.posWorld = posWorld;
 	o.posWorld.w = distance(_WorldSpaceCameraPos, posWorld);
@@ -908,10 +911,10 @@ VertexOutputForwardAdd vertForwardAdd (LuxVertexInput v)
 		#if !defined (_PARALLAXMAP)
 			TANGENT_SPACE_ROTATION;
 		#endif
-		o.fogCoord.yz = (mul(rotation, mul(_World2Object, float4(0,1,0,0)).xyz)).xy;
+		o.fogCoord.yz = (mul(rotation, mul(unity_WorldToObject, float4(0,1,0,0)).xyz)).xy;
 	#endif
 //	Get and store object scale / Needed by water ripples to match POM offset
-	float4 scaleX = mul(_Object2World, float4(1.0, 0.0, 0.0, 0.0));
+	float4 scaleX = mul(unity_ObjectToWorld, float4(1.0, 0.0, 0.0, 0.0));
 	o.fogCoord.w = length(scaleX);
 //	Lux
 	o.color = v.color;
@@ -1042,7 +1045,7 @@ VertexOutputDeferred vertDeferred (LuxVertexInput v)
 	VertexOutputDeferred o;
 	UNITY_INITIALIZE_OUTPUT(VertexOutputDeferred, o);
 
-	float4 posWorld = mul(_Object2World, v.vertex);
+	float4 posWorld = mul(unity_ObjectToWorld, v.vertex);
 //	#if UNITY_SPECCUBE_BOX_PROJECTION
 		o.posWorld.xyz = posWorld;
 //	#endif
@@ -1094,10 +1097,10 @@ VertexOutputDeferred vertDeferred (LuxVertexInput v)
 		#if !defined (_PARALLAXMAP)
 			TANGENT_SPACE_ROTATION;
 		#endif
-		o.fogCoord.yz = (mul(rotation, mul(_World2Object, float4(0,1,0,0)).xyz)).xy;
+		o.fogCoord.yz = (mul(rotation, mul(unity_WorldToObject, float4(0,1,0,0)).xyz)).xy;
 	#endif
 	// Get and store object scale / Needed by water ripples to match POM offset
-	float4 scaleX = mul(_Object2World, float4(1.0, 0.0, 0.0, 0.0));
+	float4 scaleX = mul(unity_ObjectToWorld, float4(1.0, 0.0, 0.0, 0.0));
 	o.fogCoord.w = length(scaleX);
 
 	o.color = v.color;
