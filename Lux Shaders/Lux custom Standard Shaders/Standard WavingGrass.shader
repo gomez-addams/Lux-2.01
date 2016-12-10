@@ -1,4 +1,9 @@
-Shader "Hidden/TerrainEngine/Details/WavingDoublePass" {
+//#if STRATA_REPLACEMENT_LUX
+//Shader "Hidden/TerrainEngine/Details/WavingDoublePass"
+//#else
+Shader "Hidden/Lux/TerrainEngine/Details/WavingDoublePass"
+//#endif
+{
 Properties {
 	_WavingTint ("Fade Color", Color) = (.7,.6,.5, 0)
 	_MainTex ("Base (RGB) Alpha (A)", 2D) = "white" {}

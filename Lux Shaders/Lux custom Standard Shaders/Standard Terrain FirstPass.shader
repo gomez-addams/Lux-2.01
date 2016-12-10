@@ -111,7 +111,11 @@ Shader "Lux/Standard Lighting/Nature/Terrain/Standard" {
 	}
 
 	Dependency "AddPassShader" = "Hidden/Lux/Terrain/Lux-Standard-AddPass"
-	Dependency "BaseMapShader" = "Hidden/TerrainEngine/Splatmap/Lux-Standard-Base"
+//#if STRATA_REPLACEMENT_LUX
+//	Dependency "BaseMapShader" = "Hidden/TerrainEngine/Splatmap/Lux-Standard-Base"
+//#else
+	Dependency "BaseMapShader" = "Hidden/Lux/TerrainEngine/Splatmap/Lux-Standard-Base"
+//#endif
 
 	Fallback "Nature/Terrain/Diffuse"
 }

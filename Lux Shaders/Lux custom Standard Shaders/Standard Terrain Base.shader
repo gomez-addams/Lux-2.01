@@ -1,6 +1,11 @@
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
-Shader "Hidden/TerrainEngine/Splatmap/Lux-Standard-Base" {
+//#if STRATA_REPLACEMENT_LUX
+//Shader "Hidden/TerrainEngine/Splatmap/Lux-Standard-Base"
+//#else
+Shader "Hidden/Lux/TerrainEngine/Splatmap/Lux-Standard-Base"
+//#endif
+{
 	Properties {
 		_MainTex ("Base (RGB) Smoothness (A)", 2D) = "white" {}
 
