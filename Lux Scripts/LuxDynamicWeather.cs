@@ -230,7 +230,11 @@ public float SnowMelt = 0.0f;
 			if (SnowGIMasterRenderers.Length > 0) {
 				for (int i = 0; i < SnowGIMasterRenderers.Length; i++) {
 					if (SnowGIMasterRenderers[i] != null) {
+#if UNITY_5_6_OR_NEWER
+						RendererExtensions.UpdateGIMaterials(SnowGIMasterRenderers[i]);	
+#else
 						DynamicGI.UpdateMaterials(SnowGIMasterRenderers[i]);	
+#endif
 					}
 				}
 			}
