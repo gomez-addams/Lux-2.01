@@ -1,4 +1,6 @@
-﻿Shader "Lux/Standard Lighting/Refractive/Geometry Refraction" {
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Lux/Standard Lighting/Refractive/Geometry Refraction" {
 	Properties {
 		_Color ("Color", Color) = (1,1,1,1)
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
@@ -63,7 +65,7 @@
 		void vert(inout appdata_full v, out Input o) {
 			UNITY_INITIALIZE_OUTPUT(Input, o);
 			o.lux_uv_MainTex.xy = TRANSFORM_TEX(v.texcoord, _MainTex);
-			float4 hpos = mul(UNITY_MATRIX_MVP, v.vertex);
+			float4 hpos = UnityObjectToClipPos(v.vertex);
 			o.grabUV = ComputeGrabScreenPos(hpos);
 			float3 worldPosProjPos = ComputeScreenPos(hpos);
 			COMPUTE_EYEDEPTH(worldPosProjPos.z);
