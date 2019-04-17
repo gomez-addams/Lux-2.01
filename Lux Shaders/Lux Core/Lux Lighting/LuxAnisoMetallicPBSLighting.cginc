@@ -136,14 +136,12 @@ inline half4 LightingLuxAnisoMetallic (SurfaceOutputLuxAnisoMetallic s, half3 vi
 	half3 specColor;
 	s.Albedo = DiffuseAndSpecularFromMetallic (s.Albedo, s.Metallic, /*out*/ specColor, /*out*/ oneMinusReflectivity);
 
-// ??? aber dann brauchen wir metallic nicht mehr als trans maske...
+	// ??? aber dann brauchen wir metallic nicht mehr als trans maske...
 fixed3 diffColor = s.Albedo;
 
 	// shader relies on pre-multiply alpha-blend (_SrcBlend = One, _DstBlend = OneMinusSrcAlpha)
 	// this is necessary to handle transparency in physically correct way - only diffuse component gets affected by alpha
 	half outputAlpha;
-
-
 
 	s.Albedo = PreMultiplyAlpha (s.Albedo, s.Alpha, oneMinusReflectivity, /*out*/ outputAlpha);
 
@@ -152,7 +150,7 @@ fixed3 diffColor = s.Albedo;
 	half specularIntensity = 1.0;
 	fixed3 diffuseNormal = s.Normal;
 	half3 diffuseLightDir = 0;
-	half ndotlDiffuse = gi.light.ndotl;
+	half ndotlDiffuse = 0;
 
 //	///////////////////////////////////////	
 //	Lux Area lights
@@ -161,7 +159,12 @@ fixed3 diffColor = s.Albedo;
 		Lux_AreaLight (gi.light, specularIntensity, diffuseLightDir, ndotlDiffuse, gi.light.dir, _LightColor0.a, _WorldSpaceLightPos0.xyz, s.worldPosition, viewDir, s.Normal, diffuseNormal, 1.0 - s.Smoothness);
 	#else
 		diffuseLightDir = gi.light.dir;
-		ndotlDiffuse = gi.light.ndotl;
+//	unity 5.5.
+		#if UNITY_VERSION >= 550
+			ndotlDiffuse = saturate(dot(diffuseNormal, gi.light.dir));
+		#else
+			ndotlDiffuse = gi.light.ndotl;
+		#endif
 		// If area lights are disabled we still have to reduce specular intensity
 		#if !defined(DIRECTIONAL) && !defined(DIRECTIONAL_COOKIE)
 			specularIntensity = saturate(_LightColor0.a);
@@ -170,12 +173,12 @@ fixed3 diffColor = s.Albedo;
 //	///////////////////////////////////////	
 //	Direct lighting uses the Lux BRDF
 	half4 c = Lux_ANISO_BRDF (s.Albedo, specColor, oneMinusReflectivity, s.Smoothness, s.Normal, viewDir,
-				half3(0, 0, 0), 0, 0, 0, 0,
-				//s.worldTangentDir, 1.0 - s.SmoothnessX, 1.0 - s.SmoothnessY,
+				half3(0.0h,0.0h,0.0h), 0.0h, 0.0h, 0.0h, 0.0h,
 				s.worldTangentDir, 1.0 - s.Smoothness, 1.0,
 				ndotlDiffuse,
 				gi.light, gi.indirect, specularIntensity, s.Shadow);
 //	///////////////////////////////////////
+
 	UNITY_BRANCH
 	if (s.Translucency > 0) {
 		// https://colinbarrebrisebois.com/2012/04/09/approximating-translucency-revisited-with-simplified-spherical-gaussian/

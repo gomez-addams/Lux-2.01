@@ -148,7 +148,12 @@ inline half4 LightingLuxTranslucentSpecular (SurfaceOutputLuxTranslucentSpecular
 		Lux_AreaLight(gi.light, specularIntensity, diffuseLightDir, ndotlDiffuse, gi.light.dir, _LightColor0.a, _WorldSpaceLightPos0.xyz, s.worldPosition, viewDir, s.Normal, diffuseNormal, 1.0 - s.Smoothness);
 	#else
 		diffuseLightDir = gi.light.dir;
-		ndotlDiffuse = gi.light.ndotl;
+//	unity 5.5.
+		#if UNITY_VERSION >= 550
+			ndotlDiffuse = saturate(dot(diffuseNormal, gi.light.dir));
+		#else
+			ndotlDiffuse = gi.light.ndotl;
+		#endif
 		// If area lights are disabled we still have to reduce specular intensity
 		#if !defined(DIRECTIONAL) && !defined(DIRECTIONAL_COOKIE)
 			specularIntensity = saturate(_LightColor0.a);
@@ -159,7 +164,7 @@ inline half4 LightingLuxTranslucentSpecular (SurfaceOutputLuxTranslucentSpecular
 //	Real time lighting uses the Lux BRDF
 	half4 c = Lux_BRDF1_PBS (s.Albedo, s.Specular, oneMinusReflectivity, s.Smoothness, s.Normal, viewDir,
 				// Deferred expects these inputs to be calculates up front, forward does not. So we simply fill the input struct with zeros.
-				half3(0, 0, 0), 0, 0, 0, 0,
+				half3(0.0h,0.0h,0.0h), 0.0h, 0.0h, 0.0h, 0.0h,
 				ndotlDiffuse,
 				gi.light, gi.indirect, specularIntensity, s.Shadow);
 
